@@ -19,5 +19,18 @@
     "price": "2.4",
     "desc": "بيهسعنن",
     "image": "https://raw.githubusercontent.com/badrankhaled813-star/kbfjsnd./main/uploads/1770589286296_bor1.avif"
+  },
+  {
+    "id": 1770589786249,
+    "name": "شاورما",
+    "category": "المشويات",
+    "prepTime": "20",
+    "description": "مع البرقر ",
+    "image": "https://raw.githubusercontent.com/badrankhaled813-star/kbfjsnd./main/uploads/1770589784223_IMG-20210908-WA0002.jpg",
+    "variations": {
+      "سوبر ": 2.5,
+      "دبل ": 3
+    },
+    "minPrice": 2.5
   }
 ]
