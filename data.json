@@ -45,5 +45,18 @@
       "بنيسزت،طظو": 76243
     },
     "minPrice": 32
+  },
+  {
+    "id": 1770593072641,
+    "name": "شاورما",
+    "category": "الشاورما",
+    "prepTime": "5",
+    "description": "نعتارشيذط",
+    "image": "https://raw.githubusercontent.com/badrankhaled813-star/kbfjsnd./main/uploads/1770593070246_IMG-20210908-WA0019.jpg",
+    "variations": {
+      "برجر عادي": 2.5,
+      "برجر دبل": 2.6
+    },
+    "minPrice": 2.5
   }
 ]
