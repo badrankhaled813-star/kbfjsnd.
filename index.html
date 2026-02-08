@@ -2,139 +2,172 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منيو مطعم الجزيرة</title>
+    <title>إدارة مطعم الجزيرة - النسخة الاحترافية</title>
     <style>
-        :root {
-            --primary-color: #e67e22;
-            --bg-color: #f8f9fa;
-        }
+        body { font-family: 'Segoe UI', sans-serif; background: #1a1d21; color: white; padding: 20px; direction: rtl; }
+        .form-box { background: #ffffff; color: #333; padding: 25px; border-radius: 15px; max-width: 600px; margin: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h2 { text-align: center; color: #2ea44f; }
+        label { font-weight: bold; display: block; margin-top: 15px; }
+        input, textarea, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            margin: 0;
-            padding: 20px;
-            text-align: center;
-        }
+        .variations-container { background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #eee; }
+        .var-row { display: flex; gap: 10px; margin-bottom: 10px; }
+        .var-row input { margin: 0; }
 
-        header {
-            background: var(--primary-color);
-            color: white;
-            padding: 30px 20px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
+        .add-var-btn { background: #007bff; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; margin-bottom: 10px; }
 
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            max-width: 1200px;
-            margin: auto;
-        }
-
-        .card {
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-            transition: transform 0.3s ease;
-            border-bottom: 5px solid var(--primary-color);
-        }
-
-        .card:hover { transform: translateY(-5px); }
-
-        .card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            background: #eee;
-        }
-
-        .card-content { padding: 20px; }
-        .card h3 { margin: 0 0 10px 0; color: #2c3e50; font-size: 1.4em; }
-        .card p { color: #7f8c8d; font-size: 0.95em; line-height: 1.5; height: 45px; overflow: hidden; }
-
-        .price-tag {
-            color: #27ae60;
-            font-weight: bold;
-            font-size: 1.3em;
-            display: block;
-            margin-top: 15px;
-        }
-
-        #loading { font-size: 1.2em; color: var(--primary-color); margin-top: 100px; }
-
-        .empty-msg { grid-column: 1 / -1; padding: 50px; color: #95a5a6; }
+        #saveBtn { width: 100%; padding: 15px; background: #2ea44f; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 18px; margin-top: 20px; }
+        #saveBtn:disabled { background: #ccc; }
+        #status { text-align: center; margin-top: 15px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>🍴 منيو مطعم الجزيرة 🍴</h1>
-        <p>أشهى المأكولات العربية والغربية بين يديكم</p>
-    </header>
+    <div class="form-box">
+        <h2>إضافة طبق احترافي ✨</h2>
 
-    <div id="loading">جاري تحضير أطباقنا الشهية... 👨‍🍳</div>
+        <label>اسم الطبق الرئيسي:</label>
+        <input type="text" id="itemName" placeholder="مثلاً: وجبات إيطالي">
 
-    <div id="menu-container" class="menu-grid"></div>
+        <label>التصنيف:</label>
+        <select id="itemCategory">
+            <option value="الشاورما">الشاورما</option>
+            <option value="المشويات">المشويات</option>
+            <option value="المقبلات">المقبلات</option>
+            <option value="المشروبات">المشروبات</option>
+        </select>
+
+        <label>وقت التحضير (بالدقائق):</label>
+        <input type="number" id="prepTime" placeholder="مثلاً: 20">
+
+        <label>وصف مختصر:</label>
+        <textarea id="itemDesc" placeholder="وصف الطبق..."></textarea>
+
+        <label>الخيارات والأسعار (مثلاً: عادي - 2.75):</label>
+        <div class="variations-container" id="varsContainer">
+            <div class="var-row">
+                <input type="text" class="var-name" placeholder="الخيار (سوبر)">
+                <input type="number" step="0.01" class="var-price" placeholder="السعر">
+            </div>
+        </div>
+        <button type="button" class="add-var-btn" onclick="addVariationRow()">+ إضافة خيار سعر آخر</button>
+
+        <label>صورة الطبق:</label>
+        <input type="file" id="itemImg" accept="image/*">
+
+        <button id="saveBtn">نشر الطبق في المنيو</button>
+        <div id="status"></div>
+    </div>
 
     <script>
-// --- إعدادات الرابط الخاص بك ---
-const GITHUB_USER = 'badrankhaled813-star';
-const GITHUB_REPO = 'kbfjsnd.';
-const DATA_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/data.json`;
-        async function loadMenu() {
-            const container = document.getElementById('menu-container');
-            const loading = document.getElementById('loading');
+        const GITHUB_TOKEN = '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';
+        const REPO_OWNER = 'badrankhaled813-star';
+        const REPO_NAME = 'kbfjsnd.';
+        const DATA_FILE_PATH = 'data.json';
+        const IMAGE_FOLDER = 'uploads/';
+
+        function addVariationRow() {
+            const container = document.getElementById('varsContainer');
+            const row = document.createElement('div');
+            row.className = 'var-row';
+            row.innerHTML = `
+                <input type="text" class="var-name" placeholder="الخيار">
+                <input type="number" step="0.01" class="var-price" placeholder="السعر">
+            `;
+            container.appendChild(row);
+        }
+
+        document.getElementById('saveBtn').onclick = async () => {
+            const name = document.getElementById('itemName').value;
+            const category = document.getElementById('itemCategory').value;
+            const prepTime = document.getElementById('prepTime').value;
+            const desc = document.getElementById('itemDesc').value;
+            const file = document.getElementById('itemImg').files[0];
+            const btn = document.getElementById('saveBtn');
+            const status = document.getElementById('status');
+
+            // تجميع الخيارات
+            const varNames = document.querySelectorAll('.var-name');
+            const varPrices = document.querySelectorAll('.var-price');
+            let variations = {};
+            varNames.forEach((input, index) => {
+                if(input.value) variations[input.value] = parseFloat(varPrices[index].value);
+            });
+
+            if (!name || Object.keys(variations).length === 0 || !file) {
+                return alert("يرجى إكمال البيانات الأساسية (الاسم، السعر، الصورة)");
+            }
+
+            btn.disabled = true;
+            status.innerText = "جاري الرفع إلى GitHub...";
 
             try {
-                // جلب البيانات من ملف JSON المخزن على GitHub
-                const response = await fetch(DATA_URL);
+                const base64Img = await toBase64(file);
+                const imgFileName = Date.now() + "_" + file.name;
+                const imgPath = IMAGE_FOLDER + imgFileName;
 
-                if (!response.ok) throw new Error("لم يتم العثور على بيانات المنيو");
+                // 1. رفع الصورة
+                await uploadToGithub(imgPath, base64Img.split(',')[1], `صورة: ${name}`);
 
-                const items = await response.json();
+                // 2. تحديث JSON
+                const currentData = await fetchCurrentData();
+                const newItem = {
+                    id: Date.now(),
+                    name: name,
+                    category: category,
+                    prepTime: prepTime,
+                    description: desc,
+                    image: `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${imgPath}`,
+                    variations: variations, // هذا يحتوي على الأسعار المتعددة
+                    minPrice: Math.min(...Object.values(variations)) // لأغراض العرض "يبدأ من"
+                };
 
-                loading.style.display = 'none';
-                container.innerHTML = '';
+                currentData.push(newItem);
+                const updatedJson = btoa(unescape(encodeURIComponent(JSON.stringify(currentData, null, 2))));
+                await uploadToGithub(DATA_FILE_PATH, updatedJson, `إضافة طبق: ${name}`, true);
 
-                if (items.length === 0) {
-                    container.innerHTML = '<div class="empty-msg">لا توجد أطباق متاحة حالياً.</div>';
-                    return;
-                }
+                status.style.color = "green";
+                status.innerText = "تم النشر بنجاح! 🎉";
+                setTimeout(() => location.reload(), 2000);
 
-                items.forEach(item => {
-                    const card = `
-                        <div class="card">
-                            <img src="${item.image}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
-                            <div class="card-content">
-                                <h3>${item.name}</h3>
-                                <p>${item.desc || 'طعم أصيل ووصف لا يقاوم..'}</p>
-                                <span class="price-tag">${item.price} JOD</span>
-                            </div>
-                        </div>
-                    `;
-                    container.appendChild(createElementFromHTML(card));
-                });
-
-            } catch (error) {
-                console.error(error);
-                loading.innerText = "عذراً، حدث خطأ أثناء تحميل المنيو. 🛠️";
+            } catch (err) {
+                alert("خطأ: " + err.message);
+                btn.disabled = false;
             }
+        };
+
+        // دالات المساعدة (نفسها التي استخدمناها سابقاً)
+        async function uploadToGithub(path, content, message, isJson = false) {
+            let sha = "";
+            if (isJson) {
+                const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
+                    headers: { "Authorization": `token ${GITHUB_TOKEN}` }
+                });
+                if (res.ok) { const data = await res.json(); sha = data.sha; }
+            }
+            const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
+                method: "PUT",
+                headers: { "Authorization": `token ${GITHUB_TOKEN}`, "Content-Type": "application/json" },
+                body: JSON.stringify({ message, content, sha: sha || undefined })
+            });
+            if (!response.ok) throw new Error("فشل الرفع");
         }
 
-        // وظيفة مساعدة لتحويل النص إلى HTML
-        function createElementFromHTML(htmlString) {
-            const div = document.createElement('div');
-            div.innerHTML = htmlString.trim();
-            return div.firstChild;
+        async function fetchCurrentData() {
+            const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_FILE_PATH}`, {
+                headers: { "Authorization": `token ${GITHUB_TOKEN}` }
+            });
+            if (!res.ok) return [];
+            const data = await res.json();
+            return JSON.parse(decodeURIComponent(escape(atob(data.content))));
         }
 
-        // تشغيل الدالة عند فتح الصفحة
-        loadMenu();
+        const toBase64 = file => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
     </script>
 </body>
 </html>
