@@ -12,5 +12,12 @@
     "price": "2.5",
     "desc": "شهي جدا",
     "image": "https://raw.githubusercontent.com/badrankhaled813-star/kbfjsnd./main/uploads/1770589030090_IMG-20210908-WA0041.jpg"
+  },
+  {
+    "id": 1770589288256,
+    "name": "برجر",
+    "price": "2.4",
+    "desc": "بيهسعنن",
+    "image": "https://raw.githubusercontent.com/badrankhaled813-star/kbfjsnd./main/uploads/1770589286296_bor1.avif"
   }
 ]
