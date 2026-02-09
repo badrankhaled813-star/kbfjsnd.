@@ -37,5 +37,17 @@
       "برجر دبل": 2.6
     },
     "minPrice": 2.5
+  },
+  {
+    "id": 1770645958537,
+    "name": "الدتز",
+    "category": "السناك",
+    "prepTime": "76",
+    "description": "منوم",
+    "image": "https://raw.githubusercontent.com/badrankhaled813-star/kbfjsnd./main/uploads/1770645956919_IMG-20210908-WA0014.jpg",
+    "variations": {
+      "نوخ،م": 77
+    },
+    "minPrice": 77
   }
 ]
