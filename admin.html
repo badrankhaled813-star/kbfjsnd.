@@ -1,101 +1,970 @@
-ش<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>إدارة مطعم الجزيرة - نظام GitHub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - مطعم نكشه المركزي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* ... نفس الستايليات السابقة مع تعديل بسيط للألوان لتمييز النسخة ... */
-        body { font-family: 'Segoe UI', sans-serif; background: #24292e; color: white; padding: 20px; direction: rtl; }
-        .form-box { background: #ffffff; color: #333; padding: 25px; border-radius: 15px; max-width: 500px; margin: auto; }
-        input, textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
-        button { width: 100%; padding: 15px; background: #2ea44f; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        #status { text-align: center; margin-top: 10px; font-weight: bold; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2ea44f;
+            --danger: #dc2626;
+            --warning: #f59e0b;
+            --dark: #1a1d21;
+            --light: #f8f9fa;
+            --border: #dee2e6;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ========== HEADER ========== */
+        .dashboard-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+        }
+
+        .dashboard-header h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-header p {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        /* ========== TABS ========== */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 1rem 2rem;
+            background: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: var(--shadow);
+        }
+
+        .tab:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* ========== TAB CONTENT ========== */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* ========== FORM BOX ========== */
+        .form-box {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 2rem;
+        }
+
+        .form-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .form-header h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #495057;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(46, 164, 79, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* ========== VARIATIONS ========== */
+        .variations-container {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px dashed var(--border);
+        }
+
+        .variations-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .variations-header h3 {
+            color: #495057;
+            font-size: 1.1rem;
+        }
+
+        .var-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr auto;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            align-items: center;
+        }
+
+        .var-row input {
+            margin: 0;
+        }
+
+        .remove-var-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .remove-var-btn:hover {
+            background: #b91c1c;
+            transform: scale(1.05);
+        }
+
+        .add-var-btn {
+            background: #0d6efd;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .add-var-btn:hover {
+            background: #0b5ed7;
+            transform: translateY(-2px);
+        }
+
+        /* ========== FILE UPLOAD ========== */
+        .file-upload {
+            position: relative;
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            background: var(--light);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary);
+            background: rgba(46, 164, 79, 0.05);
+        }
+
+        .file-upload input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            cursor: pointer;
+        }
+
+        .file-upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .file-upload-text {
+            color: #6c757d;
+            font-size: 0.95rem;
+        }
+
+        #preview-container {
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        #preview-img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        /* ========== BUTTONS ========== */
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #26843f;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* ========== STATUS ========== */
+        .status {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 2px solid #10b981;
+            display: block;
+        }
+
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 2px solid #ef4444;
+            display: block;
+        }
+
+        /* ========== PRODUCTS LIST ========== */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .product-card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .product-card-body {
+            padding: 1.5rem;
+        }
+
+        .product-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-category {
+            display: inline-block;
+            background: #e9ecef;
+            color: #495057;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .product-variations {
+            background: var(--light);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .product-variations h4 {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+        }
+
+        .variation-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .variation-item:last-child {
+            border-bottom: none;
+        }
+
+        .variation-price {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .product-meta {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .product-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .delete-btn {
+            width: 100%;
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 0.875rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .delete-btn:hover {
+            background: #b91c1c;
+            transform: scale(1.02);
+        }
+
+        /* ========== EMPTY STATE ========== */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: #adb5bd;
+        }
+
+        /* ========== LOADING ========== */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            border: 4px solid var(--light);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .dashboard-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .var-row {
+                grid-template-columns: 1fr;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ========== CONFIRMATION MODAL ========== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .modal-btn-confirm {
+            background: var(--danger);
+            color: white;
+        }
+
+        .modal-btn-confirm:hover {
+            background: #b91c1c;
+        }
+
+        .modal-btn-cancel {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .modal-btn-cancel:hover {
+            background: #dee2e6;
+        }
     </style>
 </head>
 <body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="dashboard-header">
+            <h1>🍽️ لوحة التحكم - مطعم نكشه المركزي</h1>
+            <p>إدارة المنتجات والأطباق بكل سهولة</p>
+        </div>
 
-    <div class="form-box">
-        <h2>إضافة طبق (بدون حدود 🚀)</h2>
-        <input type="text" id="itemName" placeholder="اسم الطبق">
-        <input type="number" id="itemPrice" placeholder="السعر">
-        <textarea id="itemDesc" placeholder="وصف الطبق"></textarea>
+        <!-- TABS -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('add')">
+                ➕ إضافة منتج جديد
+            </button>
+            <button class="tab" onclick="switchTab('list')">
+                📋 قائمة المنتجات
+            </button>
+        </div>
 
-        <label>صورة الطبق:</label>
-        <input type="file" id="itemImg" accept="image/*">
+        <!-- ADD PRODUCT TAB -->
+        <div id="add-tab" class="tab-content active">
+            <div class="form-box">
+                <div class="form-header">
+                    <h2>إضافة منتج جديد</h2>
+                </div>
 
-        <button id="saveBtn">نشر التحديثات على GitHub</button>
-        <div id="status"></div>
+                <form id="productForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>اسم المنتج *</label>
+                            <input type="text" id="itemName" placeholder="مثال: شاورما لحم عربي" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>التصنيف *</label>
+                            <select id="itemCategory" required>
+                                <option value="">اختر التصنيف</option>
+                                <option value="الشاورما">🌯 الشاورما</option>
+                                <option value="السناك">🍟 السناك</option>
+                                <option value="المقبلات">🥤 المقبلات</option>
+                                <option value="المشويات">🍖 المشويات</option>
+                                <option value="المشروبات">☕ المشروبات</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>وقت التحضير (بالدقائق) *</label>
+                            <input type="number" id="prepTime" placeholder="مثال: 15" min="1" required>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label>وصف المنتج (اختياري)</label>
+                            <textarea id="itemDesc" placeholder="أضف وصف مختصر للمنتج..."></textarea>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label>الأحجام والأسعار *</label>
+                            <div class="variations-container">
+                                <div class="variations-header">
+                                    <h3>أضف الأحجام المتاحة</h3>
+                                    <button type="button" class="add-var-btn" onclick="addVariationRow()">
+                                        ➕ إضافة حجم
+                                    </button>
+                                </div>
+                                <div id="varsContainer">
+                                    <div class="var-row">
+                                        <input type="text" class="var-name" placeholder="مثال: عادي" required>
+                                        <input type="number" step="0.01" class="var-price" placeholder="السعر" min="0" required>
+                                        <button type="button" class="remove-var-btn" onclick="removeVariationRow(this)">🗑️</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label>صورة المنتج *</label>
+                            <div class="file-upload">
+                                <input type="file" id="itemImg" accept="image/*" required onchange="previewImage(this)">
+                                <div class="file-upload-icon">📷</div>
+                                <div class="file-upload-text">
+                                    <strong>اضغط لاختيار صورة</strong> أو اسحب الصورة هنا<br>
+                                    <small>(PNG, JPG, JPEG - حتى 5MB)</small>
+                                </div>
+                            </div>
+                            <div id="preview-container"></div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="saveBtn">
+                        ✨ نشر المنتج في المنيو
+                    </button>
+
+                    <div class="status" id="status"></div>
+                </form>
+            </div>
+        </div>
+
+        <!-- LIST PRODUCTS TAB -->
+        <div id="list-tab" class="tab-content">
+            <div id="products-container">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p style="margin-top: 1rem; color: white;">جاري تحميل المنتجات...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONFIRMATION MODAL -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <div class="modal-icon">⚠️</div>
+            <h2>تأكيد الحذف</h2>
+            <p style="margin: 1rem 0; color: #6c757d;">هل أنت متأكد من حذف هذا المنتج؟ لا يمكن التراجع عن هذا الإجراء!</p>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-cancel" onclick="closeDeleteModal()">إلغاء</button>
+                <button class="modal-btn modal-btn-confirm" onclick="confirmDelete()">حذف نهائي</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        // --- إعداداتك الخاصة ---
+        // ========== CONFIGURATION ==========
         const GITHUB_TOKEN = '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';
         const REPO_OWNER = 'badrankhaled813-star';
         const REPO_NAME = 'kbfjsnd.';
         const DATA_FILE_PATH = 'data.json';
         const IMAGE_FOLDER = 'uploads/';
 
-        const saveBtn = document.getElementById('saveBtn');
-        const status = document.getElementById('status');
+        let deleteProductId = null;
 
-        saveBtn.onclick = async () => {
-            const name = document.getElementById('itemName').value;
-            const price = document.getElementById('itemPrice').value;
-            const desc = document.getElementById('itemDesc').value;
+        // ========== TAB SWITCHING ==========
+        function switchTab(tab) {
+            // Update tabs
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+
+            if (tab === 'add') {
+                document.querySelector('.tab:nth-child(1)').classList.add('active');
+                document.getElementById('add-tab').classList.add('active');
+            } else {
+                document.querySelector('.tab:nth-child(2)').classList.add('active');
+                document.getElementById('list-tab').classList.add('active');
+                loadProducts();
+            }
+        }
+
+        // ========== VARIATIONS ==========
+        function addVariationRow() {
+            const container = document.getElementById('varsContainer');
+            const row = document.createElement('div');
+            row.className = 'var-row';
+            row.innerHTML = `
+                <input type="text" class="var-name" placeholder="مثال: كبير" required>
+                <input type="number" step="0.01" class="var-price" placeholder="السعر" min="0" required>
+                <button type="button" class="remove-var-btn" onclick="removeVariationRow(this)">🗑️</button>
+            `;
+            container.appendChild(row);
+        }
+
+        function removeVariationRow(btn) {
+            const container = document.getElementById('varsContainer');
+            if (container.children.length > 1) {
+                btn.closest('.var-row').remove();
+            } else {
+                alert('يجب أن يكون هناك حجم واحد على الأقل!');
+            }
+        }
+
+        // ========== IMAGE PREVIEW ==========
+        function previewImage(input) {
+            const preview = document.getElementById('preview-container');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `<img id="preview-img" src="${e.target.result}" alt="معاينة">`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // ========== FORM SUBMISSION ==========
+        document.getElementById('productForm').onsubmit = async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('itemName').value.trim();
+            const category = document.getElementById('itemCategory').value;
+            const prepTime = document.getElementById('prepTime').value;
+            const desc = document.getElementById('itemDesc').value.trim();
             const file = document.getElementById('itemImg').files[0];
+            const btn = document.getElementById('saveBtn');
+            const status = document.getElementById('status');
 
-            if (!name || !price || !file) return alert("يرجى ملء البيانات");
+            // Collect variations
+            const varNames = document.querySelectorAll('.var-name');
+            const varPrices = document.querySelectorAll('.var-price');
+            let variations = {};
 
-            status.innerText = "جاري معالجة الصورة...";
-            saveBtn.disabled = true;
+            varNames.forEach((input, index) => {
+                const varName = input.value.trim();
+                const varPrice = parseFloat(varPrices[index].value);
+                if (varName && varPrice) {
+                    variations[varName] = varPrice;
+                }
+            });
+
+            // Validation
+            if (!name || !category || !prepTime || Object.keys(variations).length === 0 || !file) {
+                showStatus('يرجى إكمال جميع الحقول المطلوبة', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '⏳ جاري الرفع...';
 
             try {
-                // 1. تحويل الصورة لـ Base64 لرفعها
+                // Upload image
                 const base64Img = await toBase64(file);
-                const imgFileName = Date.now() + "_" + file.name;
+                const imgFileName = Date.now() + "_" + file.name.replace(/\s/g, '_');
                 const imgPath = IMAGE_FOLDER + imgFileName;
 
-                // 2. رفع الصورة لـ GitHub
-                status.innerText = "جاري رفع الصورة لـ GitHub...";
-                await uploadToGithub(imgPath, base64Img.split(',')[1], `رفع صورة ${name}`);
+                await uploadToGithub(imgPath, base64Img.split(',')[1], `صورة: ${name}`);
 
-                // 3. تحديث ملف data.json
-                status.innerText = "جاري تحديث قاعدة البيانات...";
+                // Update JSON
                 const currentData = await fetchCurrentData();
                 const newItem = {
                     id: Date.now(),
-                    name,
-                    price,
-                    desc,
-                    image: `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${imgPath}`
+                    name: name,
+                    category: category,
+                    prepTime: prepTime,
+                    description: desc,
+                    image: `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${imgPath}`,
+                    variations: variations,
+                    minPrice: Math.min(...Object.values(variations))
                 };
+
                 currentData.push(newItem);
-
                 const updatedJson = btoa(unescape(encodeURIComponent(JSON.stringify(currentData, null, 2))));
-                await uploadToGithub(DATA_FILE_PATH, updatedJson, `إضافة طبق: ${name}`, true);
+                await uploadToGithub(DATA_FILE_PATH, updatedJson, `إضافة منتج: ${name}`, true);
 
-                status.style.color = "green";
-                status.innerText = "تم النشر بنجاح! سيظهر التحديث خلال دقيقة.";
-                setTimeout(() => location.reload(), 2000);
+                showStatus('✅ تم نشر المنتج بنجاح!', 'success');
+
+                setTimeout(() => {
+                    document.getElementById('productForm').reset();
+                    document.getElementById('preview-container').innerHTML = '';
+                    document.getElementById('varsContainer').innerHTML = `
+                        <div class="var-row">
+                            <input type="text" class="var-name" placeholder="مثال: عادي" required>
+                            <input type="number" step="0.01" class="var-price" placeholder="السعر" min="0" required>
+                            <button type="button" class="remove-var-btn" onclick="removeVariationRow(this)">🗑️</button>
+                        </div>
+                    `;
+                    status.style.display = 'none';
+                    btn.disabled = false;
+                    btn.innerHTML = '✨ نشر المنتج في المنيو';
+                }, 2000);
 
             } catch (err) {
-                console.error(err);
-                status.style.color = "red";
-                status.innerText = "خطأ: " + err.message;
-                saveBtn.disabled = false;
+                showStatus('❌ خطأ: ' + err.message, 'error');
+                btn.disabled = false;
+                btn.innerHTML = '✨ نشر المنتج في المنيو';
             }
         };
 
+        // ========== LOAD PRODUCTS ==========
+        async function loadProducts() {
+            const container = document.getElementById('products-container');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div><p style="margin-top: 1rem; color: white;">جاري تحميل المنتجات...</p></div>';
+
+            try {
+                const products = await fetchCurrentData();
+
+                if (products.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📭</div>
+                            <h3>لا توجد منتجات حالياً</h3>
+                            <p>ابدأ بإضافة منتجك الأول من تبويب "إضافة منتج جديد"</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = '<div class="products-grid"></div>';
+                const grid = container.querySelector('.products-grid');
+
+                products.forEach(product => {
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+
+                    let variationsHTML = '';
+                    if (product.variations) {
+                        variationsHTML = '<div class="product-variations"><h4>الأحجام المتاحة:</h4>';
+                        Object.entries(product.variations).forEach(([name, price]) => {
+                            variationsHTML += `
+                                <div class="variation-item">
+                                    <span>${name}</span>
+                                    <span class="variation-price">${price} دينار</span>
+                                </div>
+                            `;
+                        });
+                        variationsHTML += '</div>';
+                    }
+
+                    card.innerHTML = `
+                        <img src="${product.image}" alt="${product.name}" class="product-card-image" onerror="this.src='https://via.placeholder.com/400x200?text=No+Image'">
+                        <div class="product-card-body">
+                            <h3 class="product-name">${product.name}</h3>
+                            <span class="product-category">${product.category}</span>
+
+                            ${variationsHTML}
+
+                            <div class="product-meta">
+                                <span>⏱️ ${product.prepTime} دقيقة</span>
+                                <span>💰 من ${product.minPrice} دينار</span>
+                            </div>
+
+                            ${product.description ? `<p style="color: #6c757d; margin: 1rem 0; font-size: 0.9rem;">${product.description}</p>` : ''}
+
+                            <button class="delete-btn" onclick="openDeleteModal(${product.id})">
+                                🗑️ حذف المنتج
+                            </button>
+                        </div>
+                    `;
+
+                    grid.appendChild(card);
+                });
+
+            } catch (err) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <h3>حدث خطأ في تحميل المنتجات</h3>
+                        <p>${err.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // ========== DELETE MODAL ==========
+        function openDeleteModal(id) {
+            deleteProductId = id;
+            document.getElementById('deleteModal').classList.add('active');
+        }
+
+        function closeDeleteModal() {
+            deleteProductId = null;
+            document.getElementById('deleteModal').classList.remove('active');
+        }
+
+        async function confirmDelete() {
+            if (!deleteProductId) return;
+
+            try {
+                const currentData = await fetchCurrentData();
+                const filteredData = currentData.filter(item => item.id !== deleteProductId);
+
+                const updatedJson = btoa(unescape(encodeURIComponent(JSON.stringify(filteredData, null, 2))));
+                await uploadToGithub(DATA_FILE_PATH, updatedJson, `حذف منتج ID: ${deleteProductId}`, true);
+
+                closeDeleteModal();
+                loadProducts();
+
+            } catch (err) {
+                alert('خطأ في الحذف: ' + err.message);
+            }
+        }
+
+        // ========== HELPER FUNCTIONS ==========
         async function uploadToGithub(path, content, message, isJson = false) {
-            // نحتاج الـ SHA لو الملف موجود عشان نعمل تحديث (للفولدر لا نحتاج)
             let sha = "";
             if (isJson) {
-                const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
-                    headers: { "Authorization": `token ${GITHUB_TOKEN}` }
-                });
-                if (res.ok) {
-                    const data = await res.json();
-                    sha = data.sha;
+                try {
+                    const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
+                        headers: { "Authorization": `token ${GITHUB_TOKEN}` }
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        sha = data.sha;
+                    }
+                } catch (e) {
+                    console.log('File does not exist, creating new...');
                 }
             }
 
@@ -111,16 +980,26 @@
                     sha: sha || undefined
                 })
             });
-            if (!response.ok) throw new Error("فشل الرفع لـ GitHub");
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'فشل الرفع إلى GitHub');
+            }
         }
 
         async function fetchCurrentData() {
-            const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_FILE_PATH}`, {
-                headers: { "Authorization": `token ${GITHUB_TOKEN}` }
-            });
-            if (!res.ok) return []; // لو الملف مش موجود ابدأ بمصفوفة فاضية
-            const data = await res.json();
-            return JSON.parse(decodeURIComponent(escape(atob(data.content))));
+            try {
+                const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_FILE_PATH}`, {
+                    headers: { "Authorization": `token ${GITHUB_TOKEN}` }
+                });
+
+                if (!res.ok) return [];
+
+                const data = await res.json();
+                return JSON.parse(decodeURIComponent(escape(atob(data.content))));
+            } catch (e) {
+                return [];
+            }
         }
 
         const toBase64 = file => new Promise((resolve, reject) => {
@@ -129,6 +1008,13 @@
             reader.onload = () => resolve(reader.result);
             reader.onerror = error => reject(error);
         });
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = 'status ' + type;
+            status.style.display = 'block';
+        }
     </script>
 </body>
 </html>
