@@ -955,6 +955,7 @@
         // ========== GLOBAL VARIABLES ==========
         let cart = [];
         let currentProduct = {};
+        let productsData = []; // تخزين بيانات المنتجات
 
         // ========== LOAD PRODUCTS FROM GITHUB ==========
         async function loadMenuFromGitHub() {
@@ -968,19 +969,14 @@
                 }
 
                 const items = await response.json();
+                productsData = items; // حفظ البيانات
                 console.log('✅ تم تحميل', items.length, 'منتج');
 
                 document.getElementById('loading').style.display = 'none';
                 const container = document.getElementById('products-grid');
                 container.innerHTML = '';
 
-                items.forEach(item => {
-                    const sizesArray = Object.keys(item.variations);
-                    const pricesObject = item.variations;
-
-                    const pricesStr = JSON.stringify(pricesObject).replace(/"/g, '&quot;');
-                    const sizesStr = JSON.stringify(sizesArray).replace(/"/g, '&quot;');
-
+                items.forEach((item, index) => {
                     const card = `
                         <div class="product-card" data-category="${item.category}">
                             <img src="${item.image}" alt="${item.name}" class="product-image" onerror="this.src='img/naksha logo.png'">
@@ -988,9 +984,7 @@
                                 <h3 class="product-name">${item.name}</h3>
                                 <p class="product-price">من ${item.minPrice} دينار</p>
                                 <div class="prep-time">⏱️ ${item.prepTime === '1' ? 'فوراً' : item.prepTime + ' دقائق'}</div>
-                                <button class="product-button"
-                                    data-name="${item.name}"
-                                    onclick='showProductDetails("${item.name}", "${item.image}", JSON.parse("${pricesStr}"), JSON.parse("${sizesStr}"), "${item.prepTime}")'>
+                                <button class="product-button" data-name="${item.name}" data-index="${index}" onclick="showProductDetailsById(${index})">
                                     إضافة إلى السلة
                                 </button>
                             </div>
@@ -1079,15 +1073,21 @@
             });
         }
 
-        // ========== SHOW PRODUCT DETAILS ==========
-        function showProductDetails(name, image, prices, sizes, prepTime) {
+        // ========== SHOW PRODUCT DETAILS BY INDEX ==========
+        function showProductDetailsById(index) {
+            const item = productsData[index];
+            if (!item) return;
+
+            const sizesArray = Object.keys(item.variations);
+            const pricesObject = item.variations;
+
             currentProduct = {
-                name: name,
-                image: image,
-                prices: prices,
-                sizes: sizes,
-                prepTime: prepTime,
-                selectedSize: sizes[0],
+                name: item.name,
+                image: item.image,
+                prices: pricesObject,
+                sizes: sizesArray,
+                prepTime: item.prepTime,
+                selectedSize: sizesArray[0],
                 quantity: 1
             };
 
